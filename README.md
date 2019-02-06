@@ -14,81 +14,96 @@ The hosted web application which is written in Python Flask framework and Postgr
 # Summary of software installed and configuration 
 
 ## Create Lightsail Server Instance
-1. Create a login account in Amazon Web Services.  
-2. Login into Lightsail. 
-3. To create virtual private server instance, 
-4. Choose Linux and OS Only option and select Ubuntu 16.04.LTS.
-5. Choose lowest price instance plan
-6. Give a unique host name to you instance.
-7. Type the following on Lanuch script textarea
-	apt-get –y update  # update package list
-	apt-get install –y nodejs  # install some of my favorite tools
-8. create a new SSH key pair as CatalogProject and choose location as Montreal, Zone A 
-9. This creates a new instance and with public IP and Private IP with Username to connect using SSH.
-10. Simply press Connect using SSH, it will start a new linux terminal
 
-## On the Terminal 
-### Update all currently installed packages
-This is to ensure your system is secure is to keep your software up to date with new releases
+	1. Create a login account in Amazon Web Services.  
+	2. Login into Lightsail. 
+	3. To create virtual private server instance, 
+	4. Choose Linux and OS Only option and select Ubuntu 16.04.LTS.
+	5. Choose lowest price instance plan
+	6. Give a unique host name to you instance.
+	7. Type the following on Lanuch script textarea
+		apt-get –y update  # update package list
+		apt-get install –y nodejs  # install some of my favorite tools
+	8. create a new SSH key pair as CatalogProject and choose location as Montreal, Zone A 
+	9. This creates a new instance and with public IP and Private IP with Username to connect using SSH.
+	10. Simply press Connect using SSH, it will start a new linux terminal(Lightsail Remote Server Terminal)
 
-	sudo apt update     # update available package lists
-	sudo apt upgrade    # upgrade installed packages
-	sudo apt autoremove # automatically remove packages that are no longer required
+
+## On the Lightsail Remote Server Terminal Update all currently installed packages
+
+	This is to ensure your system is secure is to keep your software up to date with new releases
+
+	sudo apt update     				# update available package lists
+	sudo apt upgrade    				# upgrade installed packages
+	sudo apt autoremove 				# automatically remove packages that are no longer required
 
 
 ### Create a New User grader and give grader sudo
 
-	sudo adduser grader # create a new user named grader # grader password is 'udacity'
-	sudo passwd grader #run this command if require password change 
-	sudo usermod -aG sudo grader #add grader to admine group that is(sudo) group.
+	sudo adduser grader 				# create a new user named grader # grader password is 'udacity'
+	sudo passwd grader 				#run this command if require password change 
+	sudo usermod -aG sudo grader 			#add grader to admine group that is(sudo) group.
 
-
-### Create an SSH key pair for grader using the ssh-keygen tool at local  
-At local vagrant machine
-		
-	ssh-keygen  # Generating public/private rsa key pair.
-        # Enter file in which to save the key (/Users/chandra/.ssh/id_rsa):  grader
-	# empty passphrase
-	# Verify at local vagrant machine a private key (id_rsa) and a public key (id_rsa.pub) are created. 
-	# Rename the id_rsa as catalog_proj.rsa  and id_ras.pub as catalog_proj.pub
 
 ### Set-up SSH keys for user grader
 As root user
 	sudo mkdir /home/grader/.ssh		       # create a directory called .ssh in grader 
 	sudo chown grader:grader /home/grader/.ssh     # changing ownership of .ssh to grader
 	sudo chmod 700 /home/grader/.ssh               # change folder permission
+	
 	sudo cp /home/ubuntu/.ssh/authorized_keys /home/grader/.ssh/
 	sudo chown grader:grader /home/grader/.ssh/authorized_keys
 	sudo chmod 644 /home/grader/.ssh/authorized_keys
 
-        ssh -i catalog_proj.rsa grader@99.79.42.115 
+### Create an SSH key pair for grader using the ssh-keygen tool at local  
+	
+	At local vagrant machine
+		
+		ssh-keygen  
+		
+	# Generating public/private rsa key pair	
+        # Enter file in which to save the key (/Users/chandra/.ssh/id_rsa):  grader
+	# empty passphrase
+	# Verify at local vagrant machine a private key (grader) and a public key (grader.pub) are created. 
+	
+	
+### Copying your Public Key Using SSH
+
+	cat grader.pub | ssh -i grader grader@99.79.42.115 -p 2200 "cat >> ~/.ssh/authorized_keys" 
+	
+	# copy local grader.pub to authorized_keys file in remote server
+
+    	ssh -i grader grader@99.79.42.115  # now we can loging without password
 
 ### Disable remote SSH login as root and Change the SSH port from 22 to 2200.
 
-	sudo nano /etc/ssh/sshd_config                                 # change the following
+	sudo nano /etc/ssh/sshd_config                # change the following
 		
-	1. PermitRootLogin no                                          #Disable remote SSH login as root
-	2. PasswordAuthentication no                                   #Disable password-based authentication for SSH
-	3. Port 2200                                                   #Change the SSH port from 22 to 2200
+	1. PermitRootLogin no                         # Disable remote SSH login as root
+	2. PasswordAuthentication no                  # Disable password-based authentication for SSH
+	3. Port 2200                                  # Change the SSH port from 22 to 2200
 
-	sudo service ssh restart                                       # restart ssh service
+	sudo service ssh restart                      # restart ssh service
 				
 	ssh -i ~/.ssh/catalog_proj.rsa grader@99.79.42.115 -p 2200     # we can login with port 2200
 
 ### Configure the Uncomplicated Firewall (UFW) to only allow incoming 
-connections for SSH (port 2200), HTTP (port 80), and NTP (port 123).
-Warning: When changing the SSH port, make sure that the firewall is open for port 2200 first, so that you don't lock yourself out of the server.
-When you change the SSH port, the Lightsail instance will no longer be accessible through the web app 'Connect using SSH' button. The button assumes the default port is being used.
 
-	sudo ufw status                 # check ufw status 
-	sudo ufw default deny incoming  # block all incoming connections on all ports
-	sudo ufw default allow outgoing # Allow outgoing connection on all ports:
-	sudo ufw allow 2200/tcp         # Allow incoming connection for SSH on port 2200
-	sudo ufw allow www              # Allow incoming connections for HTTP on port 80
-	sudo ufw allow ntp              # Allow incoming connection for NTP on port 123
-	sudo ufw show added             # Check the rules that have been added before enabling the firewall use
-	sudo ufw enable                 # Enable the firewall
-	sudo ufw status                 # Check the status of the firewall,
+	connections for SSH (port 2200), HTTP (port 80), and NTP (port 123).
+	Warning: When changing the SSH port, make sure that the firewall is open for port 2200 first, so that you 
+	don't lock yourself out of the server.
+	When you change the SSH port, the Lightsail instance will no longer be accessible through the web app 'Connect 
+	using SSH' button. The button assumes the default port is being used.
+
+	sudo ufw status                 		# check ufw status 
+	sudo ufw default deny incoming  		# block all incoming connections on all ports
+	sudo ufw default allow outgoing 		# Allow outgoing connection on all ports:
+	sudo ufw allow 2200/tcp         		# Allow incoming connection for SSH on port 2200
+	sudo ufw allow www              		# Allow incoming connections for HTTP on port 80
+	sudo ufw allow ntp              		# Allow incoming connection for NTP on port 123
+	sudo ufw show added             		# Check the rules enabled before the firewall use
+	sudo ufw enable                 		# Enable the firewall
+	sudo ufw status                 		# Check the status of the firewall,
 
 ### Configure the local timezone to UTC.
 	
@@ -96,34 +111,38 @@ When you change the SSH port, the Lightsail instance will no longer be accessibl
 
 ### Install Apache and mod_wsgi for python3
 	
-	sudo apt install apache2                            # install apache
-	sudo apt install libapache2-mod-wsgi-py3            # install python3 mod_wsgi
+	sudo apt install apache2                        # install apache
+	sudo apt install libapache2-mod-wsgi-py3        # install python3 mod_wsgi
 
 ### Install and configure PostgreSQL
 		
-	sudo apt install postgresql                         		# install postgreSQL
-	sudo nano /etc/postgresql/9.5/main/pg_hba.conf      		# only allowed connections from the local host 
-							    		# addresses 127.0.0.1 for IPv4 and ::1 for IPv6.
+	sudo apt install postgresql                     # install postgreSQL
+	sudo nano /etc/postgresql/9.5/main/pg_hba.conf  # only allowed connections from the local host 
+							# addresses 127.0.0.1 for IPv4 and ::1 for IPv6.
 									
-	sudo -u postgres createuser -P catalog 		    		# Create a PostgreSQL user called catalog. 
-							    		# You are prompted for a password. This creates 
-						            		# a normal user that can't create databases, 
-							    		# roles (users).
+	sudo -u postgres createuser -P catalog 		# Create a PostgreSQL user called catalog. You are prompted for a 
+							# password. This creates a normal user that can't create databases, 
+							# roles (users).
 
-	sudo -u postgres createdb -O catalog catalog        		#create an empty database called catalog
+	sudo -u postgres createdb -O catalog catalog    # create an empty database called catalog
 
-	sudo su - postgres                                  		#Login as user "postgres"
+	sudo su - postgres                              #Login as user "postgres"
 
-        psql                                                		#Get into postgreSQL shell
-	postgres=# ALTER ROLE catalog WITH PASSWORD 'password';         # Set a new password if required for user catalog
+        psql                                            #Get into postgreSQL shell
 	
-        postgres=# GRANT ALL PRIVILEGES ON DATABASE catalog TO catalog; # Give user "catalog" permission to 
-	                                                                # "catalog" application database
+	# Set a new password if required for user catalog
+	
+	postgres=# ALTER ROLE catalog WITH PASSWORD 'password';         
+	
+	# Give user "catalog" permission to "catalog" application database
+	
+        postgres=# GRANT ALL PRIVILEGES ON DATABASE catalog TO catalog; 
 									
-    	postgres=# \q  							#Quit postgreSQL 
-    	postgres=# exit 						#Exit from user "postgres"
+    	postgres=# \q  					#Quit postgreSQL 
+    	postgres=# exit 			        #Exit from user "postgres"
 		
 ### Install Flask, SQLAlchemy and dependencies
+	
 	sudo apt-get install python-psycopg2 python-flask
 	sudo apt-get install python-sqlalchemy python-pip
 	sudo apt-get install postgresql-plpython
@@ -134,7 +153,8 @@ When you change the SSH port, the Lightsail instance will no longer be accessibl
 	sudo pip install flask-httpauth
 
 ### Install Git version control software
-        sudo apt-get install git
+        
+	sudo apt-get install git
 
 ### Clone and setup Catalog project from the Github repository
 	cd /var/www/
@@ -144,7 +164,9 @@ When you change the SSH port, the Lightsail instance will no longer be accessibl
 	sudo chmod 700 /var/www/catalog/.git # Protect .git folder
 
 ### Update catalog.wsgi file for this installation
-Absolute paths are updated to where the catalog is located. The application secret_key is set to something random and the PostgreSQL for the catalog user is set. In this case, the file looks like this, except the password and secret is not shown for security reasons.
+	Absolute paths are updated to where the catalog is located. The application secret_key is set to something random
+	and the PostgreSQL for the catalog user is set. In this case, the file looks like this, except the password and 
+	secret is not shown for security reasons.
 
 	#!/usr/bin/python
 	import sys
@@ -170,10 +192,12 @@ Absolute paths are updated to where the catalog is located. The application secr
 
 
 ### Find the host name 
-Open http://www.hcidata.info/host2ip.cgi and receive the Host name for your public IP-address, e.g. for 99.79.42.115, its http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com
+	Open http://www.hcidata.info/host2ip.cgi and receive the Host name for your public IP-address, e.g. for 
+	99.79.42.115, its http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com
 
 ### Configure Apache2 to serve the app
-To serve the catalog app using the Apache web server, a virtual host configuration file needs to be created in the directory /etc/apache2/sites-available/, in this case called catalog-app.conf. Here are its contents:
+	To serve the catalog app using the Apache web server, a virtual host configuration file needs to be created 
+	in the directory /etc/apache2/sites-available/, in this case called catalog-app.conf. Here are its contents:
 
 <VirtualHost *:80>
         # The ServerName directive sets the request scheme, hostname and port that
@@ -238,14 +262,23 @@ To serve the catalog app using the Apache web server, a virtual host configurati
 	
 ### Update the Google OAuth client secrets file
 
-	Fill in the client_id and client_secret fields in the file g_client_secrets.json. Also change the javascript_origins field to the IP address and AWS assigned URL of the host. In this instance that would be: "javascript_origins":["http://99.79.42.115 ", "http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com"]
+	Fill in the client_id and client_secret fields in the file g_client_secrets.json. Also change the javascript_origins 
+	field to the IP address and AWS assigned URL of the host. In this instance that would be: "javascript_origins":
+	["http://99.79.42.115 ", "http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com"]
 
-	These addresses also need to be entered into the Google Developers Console -> API Manager -> Credentials, in the web client under "Authorized JavaScript origins".
+	These addresses also need to be entered into the Google Developers Console -> API Manager -> Credentials, in the web
+	client under "Authorized JavaScript origins".
 
 ### Update the Facebook OAuth client secrets file
 	
 	In the file fb_client_secrets.json, fill in the app_id and app_secret fields with the correct values.
 
-	In the Facebook developers website, on the Settings page, the website URL needs to read http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com. Then in the "Advanced" tab, in the "Client OAuth Settings" section, add http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com and http://99.79.42.115 to the "Valid OAuth redirect URIs" field. Then save these changes.
+	In the Facebook developers website, on the Settings page, the website URL needs to read 
+	http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com. Then in the "Advanced" tab, in the 
+	"Client OAuth Settings" section, add http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com and 
+	http://99.79.42.115 to the "Valid OAuth redirect URIs" field. Then save these changes.
 
-The catalog app should now be available at http://99.79.42.115  and http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com
+### The catalog app should now be available at 
+
+      http://99.79.42.115  
+      http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com

@@ -5,6 +5,17 @@ This document describes configuration of a baseline installation of a ubuntu Lin
 
 The hosted web application which is written in Python Flask framework and PostgreSQL is used as a database, and Apache2 with mod_wsgi is the webserver.
 
+# Reference:
+Following are links which explains how to secure and set up a Linux distribution on a virtual machine, install and configure a web and database server to host a web application.
+
+1. The virtual private server is [Amazon Lighsail](https://classroom.udacity.com/nanodegrees/nd004/parts/b2de4bd4-ef07-45b1-9f49-0e51e8f1336e/modules/56cf3482-b006-455c-8acd-26b37b6458d2/lessons/046c35ef-5bd2-4b56-83ba-a8143876165e/concepts/c4cbd3f2-9adb-45d4-8eaf-b5fc89cc606e).
+2. How To Configure [SSH Key-Based Authentication](https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server) on a Linux Server
+3. The database server is [PostgreSQL](https://help.ubuntu.com/community/PostgreSQL).
+4. The web application is my [Catalog project](https://github.com/ChandrakalaRatan/catalog.git) which is created as part of full stack nano degree.
+5. Deploying Flask application on an Ubuntu server and enabling Web Server Gateway Interface [WSGI](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps) and more on [mod_wsgi configuration](https://code.google.com/archive/p/modwsgi/wikis/ConfigurationDirectives.wiki)
+6. Thanks for the readme notes from [github readme](https://github.com/SteveWooding/fullstack-nanodegree-linux-server-config/blob/master/README.md)
+7. My local machine is a MacBook Air (Mac OS X 10_12_6)
+
 # Server details
 
  ## Public IP : 99.79.42.115
@@ -157,6 +168,7 @@ As root user
 	sudo apt-get install git
 
 ### Clone and setup Catalog project from the Github repository
+	
 	cd /var/www/
 	sudo mkdir chandra_fullstack
 	sudo chown grader:grader chandra_fullstack/
@@ -164,6 +176,7 @@ As root user
 	sudo chmod 700 /var/www/catalog/.git # Protect .git folder
 
 ### Update catalog.wsgi file for this installation
+	
 	Absolute paths are updated to where the catalog is located. The application secret_key is set to something random
 	and the PostgreSQL for the catalog user is set. In this case, the file looks like this, except the password and 
 	secret is not shown for security reasons.

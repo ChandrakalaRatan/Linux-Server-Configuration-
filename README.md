@@ -83,11 +83,11 @@ As root user
 	
 ### Copying your Public Key Using SSH
 
-	cat grader.pub | ssh -i grader grader@99.79.42.115 -p 2200 "cat >> ~/.ssh/authorized_keys" 
+	cat grader.pub | ssh -i grader grader@99.79.72.122 -p 2200 "cat >> ~/.ssh/authorized_keys" 
 	
 	# copy local grader.pub to authorized_keys file in remote server
 
-    	ssh -i grader grader@99.79.42.115  # now we can loging without password
+    	ssh -i grader grader@99.79.72.122  # now we can loging without password
 
 ### Disable remote SSH login as root and Change the SSH port from 22 to 2200.
 
@@ -99,7 +99,7 @@ As root user
 
 	sudo service ssh restart                      # restart ssh service
 				
-	ssh -i ~/.ssh/catalog_proj.rsa grader@99.79.42.115 -p 2200     # we can login with port 2200
+	ssh -i ~/.ssh/catalog_proj.rsa grader@99.79.72.122 -p 2200     # we can login with port 2200
 
 ### Configure the Uncomplicated Firewall (UFW) to only allow incoming 
 
@@ -209,7 +209,7 @@ As root user
 
 ### Find the host name 
 	Open http://www.hcidata.info/host2ip.cgi and receive the Host name for your public IP-address, e.g. for 
-	99.79.42.115, its http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com
+	99.79.42.115, its http://ec2-99-79-72-122.ca-central-1.compute.amazonaws.com
 
 ### Configure Apache2 to serve the app
 	To serve the catalog app using the Apache web server, a virtual host configuration file needs to be created 
@@ -224,8 +224,8 @@ As root user
         # value is not decisive as it is used as a last resort host regardless.
         # However, you must set it for any further virtual host explicitly.
         
-	ServerName http://99.79.42.115
-	ServerAlias HOSTNAME, e.g. ec2-99-79-42-115.ca-central-1.compute.amazonaws.com
+	ServerName http://99.79.72.122
+	ServerAlias HOSTNAME, e.g. ec2-99-79-72-122.ca-central-1.compute.amazonaws.com
  	
 	#ServerAdmin webmaster@localhost
 
@@ -274,13 +274,13 @@ As root user
 
 ### To make these Apache2 configuration changes live, reload Apache:
 
-	sudo service apache reload
+	sudo service apache2 reload
 	
 ### Update the Google OAuth client secrets file
 
 	Fill in the client_id and client_secret fields in the file g_client_secrets.json. Also change the javascript_origins 
 	field to the IP address and AWS assigned URL of the host. In this instance that would be: "javascript_origins":
-	["http://99.79.42.115 ", "http://ec2-99-79-72-122.ca-central-1.compute.amazonaws.com"]
+	["http://99.79.72.122 ", "http://ec2-99-79-72-122.ca-central-1.compute.amazonaws.com"]
 
 	These addresses also need to be entered into the Google Developers Console -> API Manager -> Credentials, in the web
 	client under "Authorized JavaScript origins".

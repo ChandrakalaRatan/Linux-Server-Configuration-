@@ -19,11 +19,11 @@ Following are links which are usefull to set up Linux distribution on a virtual 
 
 # Server details
 
- ## IP address:: 99.79.42.115
+ ## IP address:: 99.79.72.122
 
  ## SSH port : 2200
 
- ## Application URL: http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com
+ ## Application URL: http://ec2-99-79-72-122.ca-central-1.compute.amazonaws.com
  
 # Summary of software installed and configuration 
 
@@ -280,7 +280,7 @@ As root user
 
 	Fill in the client_id and client_secret fields in the file g_client_secrets.json. Also change the javascript_origins 
 	field to the IP address and AWS assigned URL of the host. In this instance that would be: "javascript_origins":
-	["http://99.79.42.115 ", "http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com"]
+	["http://99.79.42.115 ", "http://ec2-99-79-72-122.ca-central-1.compute.amazonaws.com"]
 
 	These addresses also need to be entered into the Google Developers Console -> API Manager -> Credentials, in the web
 	client under "Authorized JavaScript origins".
@@ -290,11 +290,11 @@ As root user
 	In the file fb_client_secrets.json, fill in the app_id and app_secret fields with the correct values.
 
 	In the Facebook developers website, on the Settings page, the website URL needs to read 
-	http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com. Then in the "Advanced" tab, in the 
-	"Client OAuth Settings" section, add http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com and 
-	http://99.79.42.115 to the "Valid OAuth redirect URIs" field. Then save these changes.
+	http://ec2-99-79-72-122.ca-central-1.compute.amazonaws.com. Then in the "Advanced" tab, in the 
+	"Client OAuth Settings" section, add http://ec2-99-79-72-122.ca-central-1.compute.amazonaws.com and 
+	http://99.79.72.122 to the "Valid OAuth redirect URIs" field. Then save these changes.
 
 ### The catalog app should now be available at 
 
-      http://99.79.42.115  
-      http://ec2-99-79-42-115.ca-central-1.compute.amazonaws.com
+      http://99.79.72.122  
+      http://ec2-99-79-72-122.ca-central-1.compute.amazonaws.com

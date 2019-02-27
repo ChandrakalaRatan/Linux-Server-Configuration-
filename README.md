@@ -276,6 +276,10 @@ As root user
 
 	sudo service apache2 reload
 	
+### To get log messages from Apache Server:	
+
+	sudo tail /var/log/apache2/error.log.
+	
 ### Update the Google OAuth client secrets file
 
 	Fill in the client_id and client_secret fields in the file g_client_secrets.json. Also change the javascript_origins 
